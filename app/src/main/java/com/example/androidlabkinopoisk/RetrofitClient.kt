@@ -1,6 +1,7 @@
 package com.example.androidlabkinopoisk
 
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -13,8 +14,10 @@ private val okHttpClient = OkHttpClient.Builder()
             .build()
         chain.proceed(request)
     }
+    .addInterceptor(HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    })
     .build()
-
 
 val retrofit = Retrofit.Builder()
     .baseUrl("https://api.kinopoisk.dev/")

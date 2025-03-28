@@ -25,19 +25,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Настройка RecyclerView
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         moviesAdapter = MoviesAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = moviesAdapter
 
-        // Выполнение запроса к API
         kinopoiskApi.getMovies().enqueue(object : Callback<MovieResponse> {
             override fun onResponse(
                 call: Call<MovieResponse>,
                 response: Response<MovieResponse>
             ) {
                 if (response.isSuccessful) {
+                    Log.d("API Response", response.body().toString())
                     response.body()?.let { movieResponse ->
                         moviesAdapter.updateMovies(movieResponse.movies)
                     }

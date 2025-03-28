@@ -1,6 +1,5 @@
 package com.example.androidlabkinopoisk.models
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,8 +31,9 @@ class MoviesAdapter(private var movies: List<Movie>) :
         holder.textTitle.text = movie.title
         holder.textYear.text = movie.year.toString()
         Glide.with(holder.itemView.context)
-            .load(movie.posterUrl)
+            .load(movie.poster?.url ?: R.drawable.default_poster)
             .into(holder.imagePoster)
+
     }
 
     override fun getItemCount(): Int = movies.size
