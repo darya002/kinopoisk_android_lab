@@ -1,5 +1,6 @@
 package com.example.androidlabkinopoisk.models
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ class MoviesAdapter(private var movies: List<Movie>) :
         return MovieViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = movies[position]
 

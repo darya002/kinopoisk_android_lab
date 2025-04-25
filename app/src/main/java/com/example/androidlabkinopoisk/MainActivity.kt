@@ -41,8 +41,15 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-
         setContentView(R.layout.activity_main)
+
+        findViewById<Button>(R.id.buttonWatched).setOnClickListener {
+            showSavedList("watched")
+        }
+
+        findViewById<Button>(R.id.buttonPlanned).setOnClickListener {
+            showSavedList("planned")
+        }
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         moviesAdapter = MoviesAdapter(emptyList())
@@ -87,7 +94,16 @@ class MainActivity : AppCompatActivity() {
                 Log.e("MainActivity", "Ошибка: ${t.message}")
                 Toast.makeText(this@MainActivity, "Сетевая ошибка", Toast.LENGTH_SHORT).show()
             }
+
         })
+    }
+
+    private fun showSavedList(key: String) {
+        val prefs = getSharedPreferences("movies", MODE_PRIVATE)
+        val gson = Gson()
+        val type = object : TypeToken<List<Movie>>() {}.type
+        val saved = gson.fromJson<List<Movie>>(prefs.getString(key, "[]"), type)
+        moviesAdapter.updateMovies(saved)
     }
 }
 

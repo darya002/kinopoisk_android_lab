@@ -16,12 +16,26 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <Button
         android:id="@+id/buttonShowSaved"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Мои фильмы"
         android:layout_margin="8dp" />
+
+    <Button
+        android:id="@+id/buttonWatched"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Просмотренное" />
+
+    <Button
+        android:id="@+id/buttonPlanned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Планирую посмотреть" />
 
 </LinearLayout>
