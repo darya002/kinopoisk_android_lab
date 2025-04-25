@@ -1,5 +1,6 @@
 package com.example.androidlabkinopoisk.models
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,14 @@ class MoviesAdapter(private var movies: List<Movie>) :
         Glide.with(holder.itemView.context)
             .load(movie.poster?.url ?: R.drawable.default_poster)
             .into(holder.imagePoster)
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, DetailActivity::class.java).apply {
+                putExtra("title", movie.title)
+                putExtra("year", movie.year)
+                putExtra("poster", movie.poster?.url)
+            }
+            holder.itemView.context.startActivity(intent)
+        }
 
     }
 
