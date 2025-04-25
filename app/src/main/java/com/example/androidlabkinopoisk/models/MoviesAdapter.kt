@@ -36,12 +36,11 @@ class MoviesAdapter(private var movies: List<Movie>) :
             .into(holder.imagePoster)
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailActivity::class.java).apply {
-                putExtra("title", movie.title)
-                putExtra("year", movie.year)
-                putExtra("poster", movie.poster?.url)
+                putExtra("movie", movie)
             }
             holder.itemView.context.startActivity(intent)
         }
+
 
     }
 

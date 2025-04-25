@@ -1,11 +1,11 @@
 package com.example.androidlabkinopoisk.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Movie(
-    @SerializedName("name")
-    val title: String,
+    @SerializedName("name") val title: String,
     val year: Int,
     val poster: Poster?
-)
+) : Serializable
 

@@ -9,34 +9,51 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidlabkinopoisk.MainActivity
 import com.example.androidlabkinopoisk.R
+import android.content.SharedPreferences
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val loginField = findViewById<EditText>(R.id.editTextLogin)
-        val passwordField = findViewById<EditText>(R.id.editTextPassword)
-        val buttonLogin = findViewById<Button>(R.id.buttonLogin)
+        prefs = getSharedPreferences("auth", MODE_PRIVATE)
 
-        buttonLogin.setOnClickListener {
-            val login = loginField.text.toString()
-            val password = passwordField.text.toString()
+        val loginInput = findViewById<EditText>(R.id.editTextLogin)
+        val passwordInput = findViewById<EditText>(R.id.editTextPassword)
+        val loginButton = findViewById<Button>(R.id.buttonLogin)
+        val registerButton = findViewById<Button>(R.id.buttonRegister)
 
-            if (login.isNotBlank() && password.isNotBlank()) {
-                val prefs = getSharedPreferences("auth", MODE_PRIVATE)
-                prefs.edit()
-                    .putString("login", login)
-                    .putString("password", password)
-                    .apply()
+        loginButton.setOnClickListener {
+            val login = loginInput.text.toString()
+            val password = passwordInput.text.toString()
 
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+            val savedLogin = prefs.getString("login", null)
+            val savedPassword = prefs.getString("password", null)
+
+            if (login == savedLogin && password == savedPassword) {
+                prefs.edit().putBoolean("isLoggedIn", true).apply()
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "Введите логин и пароль", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        registerButton.setOnClickListener {
+            val login = loginInput.text.toString()
+            val password = passwordInput.text.toString()
+
+            prefs.edit()
+                .putString("login", login)
+                .putString("password", password)
+                .putBoolean("isLoggedIn", true)
+                .apply()
+
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
     }
 }

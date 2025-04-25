@@ -31,6 +31,19 @@
             android:layout_height="wrap_content"
             android:text="Год"
             android:layout_marginTop="8dp" />
+        <Button
+            android:id="@+id/buttonAddWatched"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить в просмотренное"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/buttonAddPlanned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить в планирую посмотреть"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 </ScrollView>

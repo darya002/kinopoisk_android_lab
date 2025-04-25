@@ -19,6 +19,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidlabkinopoisk.models.LoginActivity
+import com.example.androidlabkinopoisk.models.Movie
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,20 +31,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val user = getSharedPreferences("auth", MODE_PRIVATE).getString("user", null)
-        if (user == null) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-            return
-        }
-        val prefs = getSharedPreferences("auth", MODE_PRIVATE)
-        val login = prefs.getString("login", null)
 
-        if (login == null) {
+        val prefs = getSharedPreferences("auth", MODE_PRIVATE)
+        val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
+
+        if (!isLoggedIn) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
+
 
         setContentView(R.layout.activity_main)
 
@@ -57,6 +56,17 @@ class MainActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+        findViewById<Button>(R.id.buttonShowSaved).setOnClickListener {
+            val prefs = getSharedPreferences("movies", MODE_PRIVATE)
+            val gson = Gson()
+            val type = object : TypeToken<List<Movie>>() {}.type
+            val watched = gson.fromJson<List<Movie>>(prefs.getString("watched", "[]"), type)
+            val planned = gson.fromJson<List<Movie>>(prefs.getString("planned", "[]"), type)
+
+            val all = watched + planned
+            moviesAdapter.updateMovies(all)
+        }
+
         kinopoiskApi.getMovies().enqueue(object : Callback<MovieResponse> {
             override fun onResponse(
                 call: Call<MovieResponse>,
