@@ -1,4 +1,4 @@
-package com.example.androidlabkinopoisk.models
+package com.example.androidlabkinopoisk.movies
 
 import java.io.Serializable
 

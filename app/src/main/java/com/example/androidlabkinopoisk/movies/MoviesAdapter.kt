@@ -1,4 +1,4 @@
-package com.example.androidlabkinopoisk.models
+package com.example.androidlabkinopoisk.movies
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.androidlabkinopoisk.activities.DetailActivity
 import com.example.androidlabkinopoisk.R
 
 class MoviesAdapter(private var movies: List<Movie>) :

@@ -1,4 +1,4 @@
-package com.example.androidlabkinopoisk
+package com.example.androidlabkinopoisk.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,10 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.androidlabkinopoisk.models.LoginActivity
-import com.example.androidlabkinopoisk.models.Movie
-import com.example.androidlabkinopoisk.models.MovieResponse
-import com.example.androidlabkinopoisk.models.MoviesAdapter
+import com.example.androidlabkinopoisk.KinopoiskApi
+import com.example.androidlabkinopoisk.R
+import com.example.androidlabkinopoisk.movies.Movie
+import com.example.androidlabkinopoisk.movies.MovieResponse
+import com.example.androidlabkinopoisk.movies.MoviesAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
@@ -82,7 +83,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.e("MainActivity", "Ошибка: ${response.code()}")
-                    Toast.makeText(this@MainActivity, "Ошибка загрузки фильмов", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Ошибка загрузки фильмов", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 

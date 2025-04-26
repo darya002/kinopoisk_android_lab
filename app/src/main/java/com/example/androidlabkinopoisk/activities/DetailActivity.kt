@@ -1,4 +1,4 @@
-package com.example.androidlabkinopoisk.models
+package com.example.androidlabkinopoisk.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.androidlabkinopoisk.R
+import com.example.androidlabkinopoisk.movies.Movie
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
 
 class DetailActivity : AppCompatActivity() {
 
