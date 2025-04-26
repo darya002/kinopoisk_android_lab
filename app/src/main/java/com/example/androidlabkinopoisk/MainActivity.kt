@@ -14,17 +14,23 @@ import com.example.androidlabkinopoisk.models.MovieResponse
 import com.example.androidlabkinopoisk.models.MoviesAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var kinopoiskApi: KinopoiskApi
+
     private lateinit var moviesAdapter: MoviesAdapter
-    private var allMovies: List<Movie> = emptyList() // <--- Сохраняем все фильмы
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         val prefs = getSharedPreferences("auth", MODE_PRIVATE)
         val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
@@ -35,54 +41,44 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        setContentView(R.layout.activity_main) // <-- ОБЯЗАТЕЛЬНО ДО findViewById
-
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         moviesAdapter = MoviesAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = moviesAdapter
 
-        // Кнопка выхода
         findViewById<Button>(R.id.buttonLogout).setOnClickListener {
             prefs.edit().clear().apply()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            startActivity(Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            })
         }
 
-        // Кнопка "Просмотренное"
-        findViewById<Button>(R.id.buttonWatched).setOnClickListener {
-            showSavedList("watched")
-        }
-
-        // Кнопка "Планирую посмотреть"
-        findViewById<Button>(R.id.buttonPlanned).setOnClickListener {
-            showSavedList("planned")
-        }
-
-        // Кнопка "Мои фильмы" (всё из SharedPreferences)
         findViewById<Button>(R.id.buttonShowSaved).setOnClickListener {
-            val moviePrefs = getSharedPreferences("movies", MODE_PRIVATE)
-            val gson = Gson()
-            val type = object : TypeToken<List<Movie>>() {}.type
-            val watched = gson.fromJson<List<Movie>>(moviePrefs.getString("watched", "[]"), type)
-            val planned = gson.fromJson<List<Movie>>(moviePrefs.getString("planned", "[]"), type)
-            val all = watched + planned
+            val all = getSavedMovies("watched") + getSavedMovies("planned")
             moviesAdapter.updateMovies(all)
         }
 
-        // Кнопка "Показать все фильмы"
-        findViewById<Button>(R.id.buttonShowAll).setOnClickListener {
-            moviesAdapter.updateMovies(allMovies)
+        findViewById<Button>(R.id.buttonWatched).setOnClickListener {
+            moviesAdapter.updateMovies(getSavedMovies("watched"))
         }
 
-        // Загрузка фильмов из API
+        findViewById<Button>(R.id.buttonPlanned).setOnClickListener {
+            moviesAdapter.updateMovies(getSavedMovies("planned"))
+        }
+
+        findViewById<Button>(R.id.buttonShowAll).setOnClickListener {
+            fetchMovies()
+        }
+
+        fetchMovies()
+    }
+
+    private fun fetchMovies() {
         kinopoiskApi.getMovies().enqueue(object : Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if (response.isSuccessful) {
-                    response.body()?.let { movieResponse ->
-                        allMovies = movieResponse.movies // <--- сохраняем
-                        moviesAdapter.updateMovies(allMovies)
+                    response.body()?.let {
+                        moviesAdapter.updateMovies(it.movies)
                     }
                 } else {
                     Log.e("MainActivity", "Ошибка: ${response.code()}")
@@ -97,11 +93,10 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun showSavedList(key: String) {
+    private fun getSavedMovies(key: String): List<Movie> {
         val prefs = getSharedPreferences("movies", MODE_PRIVATE)
         val gson = Gson()
         val type = object : TypeToken<List<Movie>>() {}.type
-        val saved = gson.fromJson<List<Movie>>(prefs.getString(key, "[]"), type)
-        moviesAdapter.updateMovies(saved)
+        return gson.fromJson(prefs.getString(key, "[]"), type)
     }
 }
